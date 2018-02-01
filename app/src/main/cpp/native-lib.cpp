@@ -85,7 +85,7 @@ JNIEXPORT void JNICALL Java_netease_com_jnisot_Ap_replace(
     smeth->dex_cache_resolved_types_ = dmeth->dex_cache_resolved_types_;
     smeth->dex_cache_resolved_methods_ = dmeth->dex_cache_resolved_methods_;
     smeth->dex_cache_strings_ = dmeth->dex_cache_strings_;
-    //smeth->dex_code_item_offset_ = dmeth->dex_code_item_offset_;
+    smeth->dex_code_item_offset_ = dmeth->dex_code_item_offset_;
     smeth->dex_method_index_ = dmeth->dex_method_index_;
     smeth->gc_map_ = dmeth->gc_map_;
     smeth->entry_point_from_jni_ = dmeth->entry_point_from_jni_;
