@@ -1,12 +1,13 @@
 package netease.com.jnisot;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
-
+    private static final String TAG = "MainActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,6 +19,9 @@ public class MainActivity extends AppCompatActivity {
         // Example of a call to a native method
         TextView tv = (TextView) findViewById(R.id.sample_text);
         tv.setText(stringFromJNI());
+        Log.d(TAG, "onCreate: " + Build.VERSION.SDK_INT);
+
+        printAPILevel(Build.VERSION.SDK_INT);
     }
 
     /**
@@ -27,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
     public native String stringFromJNI();
 
     public native void printLog();
+
+    public native void printAPILevel(int level);
 
     // Used to load the 'native-lib' library on application startup.
     static {
