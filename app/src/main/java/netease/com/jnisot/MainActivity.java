@@ -33,6 +33,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void TestMethod()
     {
-        Log.d(TAG, "TestMethod: " + "DEDEDEDEDE");
+        Log.d(TAG, "Bug Method！！！");
     }
 }
