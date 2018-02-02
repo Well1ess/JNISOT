@@ -25,6 +25,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 TestMethod();
+
+                try {
+                    Log.d(TAG, MainActivity.class.getDeclaredMethod("onCreate").getName());
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
