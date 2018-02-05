@@ -29,11 +29,11 @@ JNIEXPORT jstring JNICALL Java_netease_com_jnisot_Ap_stringFromJNI(
 }
 
 extern "C" {
-void static printInfo(JNIEnv *env,jobject srcMethod)
-{
-    art::mirror::ArtMethod* srcMethodInfo =
+void static printInfo(JNIEnv *env, jobject srcMethod) {
+    art::mirror::ArtMethod *srcMethodInfo =
             (art::mirror::ArtMethod *) env->FromReflectedMethod(srcMethod);
-    LOGD("methodInfo: %d",reinterpret_cast<art::mirror::Class*>(srcMethodInfo->declaring_class_)->status_);
+    LOGD("methodInfo: %d",
+         reinterpret_cast<art::mirror::Class *>(srcMethodInfo->declaring_class_)->status_);
 
 }
 JNIEXPORT void JNICALL Java_netease_com_jnisot_Ap_printLog(
@@ -55,6 +55,20 @@ JNIEXPORT void JNICALL Java_netease_com_jnisot_Ap_printMethodInfo(
     printInfo(env, srcMethod);
 }
 
+JNIEXPORT void JNICALL Java_netease_com_jnisot_MainActivity_showArtMethodSize(
+        JNIEnv *env,
+        jobject,
+        jobject srcMethod,
+        jobject dest)
+{
+    size_t firMid = (size_t) env->FromReflectedMethod(srcMethod);
+    size_t secMid = (size_t) env->FromReflectedMethod(dest);
+
+    size_t methSize = secMid - firMid;
+    memcpy(env->FromReflectedMethod(srcMethod), env->FromReflectedMethod(dest), methSize);
+    LOGD("methodsize: %d", methSize);
+}
+
 JNIEXPORT void JNICALL Java_netease_com_jnisot_Ap_replace(
         JNIEnv *env,
         jobject,
@@ -64,21 +78,21 @@ JNIEXPORT void JNICALL Java_netease_com_jnisot_Ap_replace(
 
     printInfo(env, srcMethod);
     printInfo(env, dest);
-    art::mirror::ArtMethod* smeth =
-            (art::mirror::ArtMethod*) env->FromReflectedMethod(srcMethod);
+    art::mirror::ArtMethod *smeth =
+            (art::mirror::ArtMethod *) env->FromReflectedMethod(srcMethod);
 
-    art::mirror::ArtMethod* dmeth =
-            (art::mirror::ArtMethod*) env->FromReflectedMethod(dest);
+    art::mirror::ArtMethod *dmeth =
+            (art::mirror::ArtMethod *) env->FromReflectedMethod(dest);
 
-    reinterpret_cast<art::mirror::Class*>(dmeth->declaring_class_)->class_loader_ =
-            reinterpret_cast<art::mirror::Class*>(smeth->declaring_class_)->class_loader_;
+    reinterpret_cast<art::mirror::Class *>(dmeth->declaring_class_)->class_loader_ =
+            reinterpret_cast<art::mirror::Class *>(smeth->declaring_class_)->class_loader_;
 //    //for plugin classloader
-    reinterpret_cast<art::mirror::Class*>(dmeth->declaring_class_)->clinit_thread_id_ =
-            reinterpret_cast<art::mirror::Class*>(smeth->declaring_class_)->clinit_thread_id_;
-    reinterpret_cast<art::mirror::Class*>(dmeth->declaring_class_)->status_ =
-            reinterpret_cast<art::mirror::Class*>(smeth->declaring_class_)->status_-1;
+    reinterpret_cast<art::mirror::Class *>(dmeth->declaring_class_)->clinit_thread_id_ =
+            reinterpret_cast<art::mirror::Class *>(smeth->declaring_class_)->clinit_thread_id_;
+    reinterpret_cast<art::mirror::Class *>(dmeth->declaring_class_)->status_ =
+            reinterpret_cast<art::mirror::Class *>(smeth->declaring_class_)->status_ - 1;
     //for reflection invoke
-    reinterpret_cast<art::mirror::Class*>(dmeth->declaring_class_)->super_class_ = 0;
+    reinterpret_cast<art::mirror::Class *>(dmeth->declaring_class_)->super_class_ = 0;
 
     smeth->declaring_class_ = dmeth->declaring_class_;
     smeth->access_flags_ = dmeth->access_flags_ | 0x0001;
