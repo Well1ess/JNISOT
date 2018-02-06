@@ -58,6 +58,19 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public class Generic<T> {
+        public void print(T name) {
+            System.out.println(name.toString());
+        }
+    }
+
+    public class Special extends Generic<Number> {
+        @Override
+        public void print(Number name) {
+            super.print(name);
+        }
+    }
+
     public native void showArtMethodSize(Method src, Method dest);
 
     public void TestMethod()
