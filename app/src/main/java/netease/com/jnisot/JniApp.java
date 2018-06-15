@@ -13,12 +13,24 @@ import dalvik.system.DexFile;
  * Created by shs1330 on 2018/2/1.
  */
 
-public class Ap extends Application {
+public class JniApp extends Application {
     private static final String TAG = "MainActivity";
-
+    public static Context that;
+    private static Context source;
     @Override
     public void onCreate() {
         super.onCreate();
+        source = getApplicationContext();
+        //hook(getApplicationContext());
+    }
+    public static Context getHolderContext(Context context) {
+        if (that != null)
+            return that;
+        return context;
+    }
+
+    public static Context getSourceContext() {
+        return source;
     }
 
     public static void hook(Context context)
@@ -66,10 +78,6 @@ public class Ap extends Application {
         }
     }
 
-    /**
-     * A native method that is implemented by the 'native-lib' native library,
-     * which is packaged with this application.
-     */
     public native String stringFromJNI();
 
     public native void printLog();
@@ -81,7 +89,6 @@ public class Ap extends Application {
     public static native void replace(Method src, Method dest);
 
 
-    // Used to load the 'native-lib' library on application startup.
     static {
         System.loadLibrary("native-lib");
     }

@@ -21,7 +21,7 @@
 
 
 extern "C"
-JNIEXPORT jstring JNICALL Java_netease_com_jnisot_Ap_stringFromJNI(
+JNIEXPORT jstring JNICALL Java_netease_com_jnisot_JniApp_stringFromJNI(
         JNIEnv *env,
         jobject /* this */) {
     std::string hello = "Hello from C++";
@@ -36,26 +36,26 @@ void static printInfo(JNIEnv *env, jobject srcMethod) {
          reinterpret_cast<art::mirror::Class *>(srcMethodInfo->declaring_class_)->status_);
 
 }
-JNIEXPORT void JNICALL Java_netease_com_jnisot_Ap_printLog(
+JNIEXPORT void JNICALL Java_netease_com_jnisot_JniApp_printLog(
         JNIEnv *env,
         jobject) {
     printf("this write by c!");
     //uint32_t 就是一个32bit（位）的int类型记录地址，这是个指针
 }
-JNIEXPORT void JNICALL Java_netease_com_jnisot_Ap_printAPILevel(
+JNIEXPORT void JNICALL Java_netease_com_jnisot_JniApp_printAPILevel(
         JNIEnv *env,
         jobject,
         int api) {
     LOGD("apk: %d", api);
 }
-JNIEXPORT void JNICALL Java_netease_com_jnisot_Ap_printMethodInfo(
+JNIEXPORT void JNICALL Java_netease_com_jnisot_JniApp_printMethodInfo(
         JNIEnv *env,
         jobject,
         jobject srcMethod) {
     printInfo(env, srcMethod);
 }
 
-JNIEXPORT void JNICALL Java_netease_com_jnisot_MainActivity_showArtMethodSize(
+JNIEXPORT void JNICALL Java_netease_com_jnisot_VMReplace_showArtMethodSize(
         JNIEnv *env,
         jobject,
         jobject srcMethod,
@@ -65,11 +65,11 @@ JNIEXPORT void JNICALL Java_netease_com_jnisot_MainActivity_showArtMethodSize(
     size_t secMid = (size_t) env->FromReflectedMethod(dest);
 
     size_t methSize = secMid - firMid;
-    memcpy(env->FromReflectedMethod(srcMethod), env->FromReflectedMethod(dest), methSize);
+    memcpy(env->FromReflectedMethod(srcMethod), env->FromReflectedMethod(dest), 80);
     LOGD("methodsize: %d", methSize);
 }
 
-JNIEXPORT void JNICALL Java_netease_com_jnisot_Ap_replace(
+JNIEXPORT void JNICALL Java_netease_com_jnisot_JniApp_replace(
         JNIEnv *env,
         jobject,
         jobject srcMethod,
@@ -84,15 +84,13 @@ JNIEXPORT void JNICALL Java_netease_com_jnisot_Ap_replace(
     art::mirror::ArtMethod *dmeth =
             (art::mirror::ArtMethod *) env->FromReflectedMethod(dest);
 
-    reinterpret_cast<art::mirror::Class *>(dmeth->declaring_class_)->class_loader_ =
-            reinterpret_cast<art::mirror::Class *>(smeth->declaring_class_)->class_loader_;
-//    //for plugin classloader
-    reinterpret_cast<art::mirror::Class *>(dmeth->declaring_class_)->clinit_thread_id_ =
-            reinterpret_cast<art::mirror::Class *>(smeth->declaring_class_)->clinit_thread_id_;
-    reinterpret_cast<art::mirror::Class *>(dmeth->declaring_class_)->status_ =
-            reinterpret_cast<art::mirror::Class *>(smeth->declaring_class_)->status_ - 1;
+    reinterpret_cast<art::mirror::Class*>(dmeth->declaring_class_)->class_loader_ =
+            reinterpret_cast<art::mirror::Class*>(smeth->declaring_class_)->class_loader_; //for plugin classloader
+    reinterpret_cast<art::mirror::Class*>(dmeth->declaring_class_)->clinit_thread_id_ =
+            reinterpret_cast<art::mirror::Class*>(smeth->declaring_class_)->clinit_thread_id_;
+    reinterpret_cast<art::mirror::Class*>(dmeth->declaring_class_)->status_ = reinterpret_cast<art::mirror::Class*>(smeth->declaring_class_)->status_-1;
     //for reflection invoke
-    reinterpret_cast<art::mirror::Class *>(dmeth->declaring_class_)->super_class_ = 0;
+    reinterpret_cast<art::mirror::Class*>(dmeth->declaring_class_)->super_class_ = 0;
 
     smeth->declaring_class_ = dmeth->declaring_class_;
     smeth->access_flags_ = dmeth->access_flags_ | 0x0001;

@@ -7,16 +7,17 @@ import android.view.View;
 
 import java.lang.reflect.Method;
 
-import static netease.com.jnisot.Ap.hook;
+import static netease.com.jnisot.JniApp.hook;
+import static netease.com.jnisot.VMReplace.showArtMethodSize;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
-    final public  void f1()
+    final public void f1()
     {
         Log.d(TAG, "f1: before hook");
     }
-    final public  void f2()
+    final public void f2()
     {
         Log.d(TAG, "f1: after hook");
     }
@@ -38,14 +39,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 TestMethod();
 
-                try {
-                    Log.d(TAG, MainActivity.class.getDeclaredMethod("onCreate").getName());
-                } catch (NoSuchMethodException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    Log.d(TAG, MainActivity.class.getDeclaredMethod("onCreate").getName());
+//                } catch (NoSuchMethodException e) {
+//                    e.printStackTrace();
+//                }
             }
         });
-
+//
         try {
             f1();
             Method f1M = MainActivity.class.getDeclaredMethod("f1");
@@ -58,20 +59,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public class Generic<T> {
-        public void print(T name) {
-            System.out.println(name.toString());
-        }
-    }
-
-    public class Special extends Generic<Number> {
-        @Override
-        public void print(Number name) {
-            super.print(name);
-        }
-    }
-
-    public native void showArtMethodSize(Method src, Method dest);
 
     public void TestMethod()
     {
